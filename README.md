@@ -22,3 +22,13 @@ List of commands:
 |Unmount NTFS volume | `mount_ntfs.sh -u` |
 |Mount NTFS volume withou write enabled | `mount_ntfs.sh -r` |
 |Show help | `mount_ntfs.sh -h` |
+
+## Extra
+
+There is a python script called `copy_files.py` used to copy files from a folder into another folder. Just run:
+
+```bash
+python copy_files.py <source_folder> <destination_folder> # Arguments are mandatory
+```
+
+NOTE: only files will be copied, not folders.
