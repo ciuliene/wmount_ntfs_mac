@@ -1,68 +1,35 @@
 import os
-import sys
-from argparse import ArgumentParser
+import shutil
+import argparse
+import os
+import shutil
+import argparse
 
 
-def get_arguments():
-    parser = ArgumentParser(
-        description='Copy files from one folder to another')
-    parser.add_argument('source', help='Source folder')
-    parser.add_argument('destination', help='Destination folder')
+def copy_files(source_folder, destination_folder):
+    for root, _, files in os.walk(source_folder):
+        for file in files:
+            source_path = os.path.join(root, file)
+            destination_path = os.path.join(
+                destination_folder, os.path.relpath(source_path, source_folder))
+            os.makedirs(os.path.dirname(destination_path), exist_ok=True)
+            shutil.copy2(source_path, destination_path)
 
+
+if __name__ == "__main__":  # pragma: no cover
+    parser = argparse.ArgumentParser(
+        description="Copy files from a source folder to a destination folder")
+    parser.add_argument("source_folder", help="Path to the source folder")
+    parser.add_argument("destination_folder",
+                        help="Path to the destination folder")
     args = parser.parse_args()
 
-    if os.path.isdir(args.source) is False:
-        parser.error(f"Source folder '{args.source}' does not exist")
+    if not os.path.exists(args.source_folder):
+        print("\033[31mThe source folder does not exist\033[0m")
+        exit(1)
 
-    if os.path.isdir(args.destination) is False:
-        parser.error(f"Destination folder '{args.destination}' does not exist")
+    if not os.path.exists(args.destination_folder):
+        print("\033[31mThe destination folder does not exist\033[0m")
+        exit(1)
 
-    return args
-
-
-def copy_with_progress(src_folder, dest_folder):
-    files = os.listdir(src_folder).sort()
-
-    if not os.path.exists(dest_folder):
-        os.makedirs(dest_folder)
-
-    for file_name in files:
-        src_path = os.path.join(src_folder, file_name)
-        dest_path = os.path.join(dest_folder, file_name)
-
-        if os.path.exists(dest_path):
-            print(f"File '{file_name}' already exists, skip...")
-            continue
-
-        if os.path.isdir(src_path):
-            print(f"'{file_name}' is a directory, skip...")
-            continue
-
-        file_size = os.path.getsize(src_path)
-        copied = 0
-
-        # Open the source and destination files in binary mode and copy each chunk
-        with open(src_path, 'rb') as src_file, open(dest_path, 'wb') as dest_file:
-            while True:
-                chunk = src_file.read(4096)
-                if not chunk:
-                    break
-
-                dest_file.write(chunk)
-
-                # Print the progress bar
-                copied += len(chunk)
-                progress = min(int(copied / file_size * 50), 50)
-                sys.stdout.write(f'\r{file_name} ')
-                sys.stdout.write("[%-50s] %d%%" %
-                                 ('=' * progress, progress * 2))
-                sys.stdout.flush()
-        print()
-
-
-if __name__ == '__main__':
-    args = get_arguments()
-    source_folder = args.source
-    destination_folder = args.destination
-
-    copy_with_progress(source_folder, destination_folder)
+    copy_files(args.source_folder, args.destination_folder)
