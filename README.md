@@ -25,8 +25,13 @@ List of commands:
 
 ## Extra
 
-There is a python script called `copy_files.py` used to copy files from a folder into another folder (also files in subfolders). Just run:
+There is a shell script called `copy_files.sh` used to copy or move files from a folder into another folder. Just run:
 
 ```bash
-python copy_files.py <source_folder> <destination_folder> # Arguments are mandatory
+sh copy_files.sh -s <source_folder> -d <destination_folder> [-m]
 ```
+
+Where:
+- `<source_folder>` is the folder where the files are located
+- `<destination_folder>` is the folder where the files will be copied
+- `-m` is an optional flag to move the files instead of copying them

@@ -100,7 +100,7 @@ echo "Remounting \033[33m${VOLUME_NAME}\033[0m with write enabled..."
 
 if [ "$rw" = true ]; then
   sudo mkdir -p "$mount_point"
-  sudo ntfs-3g "$ntfs_disk" "$mount_point"
+  sudo ntfs-3g "$ntfs_disk" "$mount_point" # -o allow_other,default_permissions
 else
   diskutil mount $ntfs_disk 
 fi
